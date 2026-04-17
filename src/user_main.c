@@ -8,6 +8,7 @@
 #include "hal/hal_adc.h"
 #include "new_common.h"
 
+
 //#include "driver/drv_ir.h"
 #include "driver/drv_public.h"
 #include "driver/drv_bl_shared.h"
@@ -42,6 +43,8 @@
 #include "driver/drv_mdns.h"
 #include "driver/drv_ssdp.h"
 #include "driver/drv_uart.h"
+
+#include "c2_bulb.h"
 
 #if PLATFORM_BEKEN
 #include <mcu_ps.h>
@@ -1655,6 +1658,7 @@ void Main_Init()
 	Main_Init_Delay();
 	// do things we want after TCP/IP stack is ready
 	Main_Init_After_Delay();
+	bulb_c2_init();
 
 }
 

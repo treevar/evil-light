@@ -44,3 +44,7 @@ enc_temp_folder/**
 *.i
 *.ii
 *.s
+
+
+c2-env
+venv

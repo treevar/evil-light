@@ -1,0 +1,55 @@
+I bought a pack of 3 Feit OM60/RGBW/CA/AG(N) smart bulbs https://www.feit.com/collections/smart-wi-fi-light-bulbs/products/8-8w-60w-replacement-tunable-white-e26-base-a19-smart-wifi-led-light-bulb-3-pack-om60-cct-ca-ag-3
+The (N) in the model name seems to denote a newer revision from the already posted https://www.elektroda.com/rtvforum/topic3907478.html
+as these use a Tuya T1-UH-L (Beken BK7238), not the BK7231N https://developer.tuya.com/en/docs/iot/T1-U-HL-Module-Datasheet?id=Kdfp5j893qwxg
+They still use the BP5758D LED driver IC
+
+Since they have the updated BK7238 cloudcutter won't work
+
+Teardown:
+Getting the dome off is tricky without dmamaging the housing (I have yet to find a way to not damage the housing)
+I used a plastic scraper and wedged it between teh dome and the housing and then went all the way around the dome.
+This results in some plastic breaking off from the housing though.
+I then pulled and twisted on the dome until it popped off.
+Then remove the remaing silicone from the bulb.
+
+To get the light board off I used a utility knife to pry it off, it is connected only by the 6 pin connector.
+The PCB is flat on four sides, I went around prying up on all of those points until the board came off.
+
+Now to pop the center contact from the bottom of the bulb.
+I again used a utility knife to pry it off. after that is off you will see a wire bent around the black plastic, unbend it so it can go through the hole.
+
+There is another wire wedged between the housing and the screw, I used tweezers to yank it out.
+Once both wires are free from the housing, the main board can be pulled out.
+WARNING: if the bulb has been plugged in, the capacitors may still be charged. They can't cause any harm, but you may get a small shock if you touch the leads on the back of the board.
+
+Flashing:
+	Supplies:
+	 - USB -> UART Serial adapter
+	 - EXTERNAL 3.3v power source (AMS1117) (3.3v on serial adapter does not have sufficient power)
+	    - Datasheet recomends input and output capacitors (you could try without, but IDK if it'll work)
+		 - I used a 10nF cap on both the in and output as well as a 10uF cap on the input and a 100uF cap on the output
+		- If using 5v line from serial adapter a protection diode would be a good idea (I used a IN581)
+	- Either a way to switch power to the board or a way to ground the CEN pin
+	   - I opted for the power switch so I didn't have to solder another wire
+	- 10kOhm resistor on the tx line of the serial adapter.
+	  - Without it the TX line was backfeeding the chip (which was enough power to dump the flash actually) which makes it impossible to flash
+
+	I was unable to flash using the GUI flasher, I ran into a failed to write error
+	I was able to dump the flash using it though.
+
+	I was able to successfully using ltchiptool however.
+
+	WARNING: Before flashing dump the original firmware and keep it safe. If you ever want to go back to stock or run into problems with flashing other firmware you can just flash the backup
+
+	I am on Ubuntu, and for the following commands the serial adapter is /dev/ttyUSB0
+
+	When ltchiptool says to short CEN to ground, that is when you switch the power. It can be a little finicky, I've had to switch power nultiple tiems before successfully getting a link
+
+	create a backup of the stock firmware with
+	ltchiptool flash read -b 115200 -d /dev/ttyUSB0 bk72xxgen2 stock_firmware_backup.bin
+
+	Download the latest binary for the BK7238 from https://github.com/openshwprojects/OpenBK7231T_App/releases
+
+	write: ltchiptool flash write -s 0 -b 115200 -f bk72xxgen2 -d /dev/ttyUSB0 [BINARY FILE NAME]
+
+	Once open beken is successfully flashed you can then do OTA firmware updates

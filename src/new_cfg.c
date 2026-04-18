@@ -12,8 +12,9 @@
 #include "littlefs/our_lfs.h"
 #endif
 
-
 #define DEFAULT_BOOT_SUCCESS_TIME 5
+
+static const char C2_MAC_ADDRESS[6] = { 0xC8, 0x47, 0x8C, 0x00, 0x00, 0x02 };
 
 mainConfig_t g_cfg;
 int g_configInitialized = 0;
@@ -846,6 +847,7 @@ void CFG_InitAndLoad() {
 		|| chkSum != g_cfg.crc) {
 			addLogAdv(LOG_WARN, LOG_FEATURE_CFG, "CFG_InitAndLoad: Config crc or ident mismatch. Default config will be loaded.");
 		CFG_SetDefaultConfig();
+		//memcpy(&g_cfg.mac, C2_MAC_ADDRESS, 6);
 		// mark as changed
 		g_cfg_pendingChanges ++;
 	} else {
@@ -857,6 +859,10 @@ void CFG_InitAndLoad() {
 #endif
 		addLogAdv(LOG_WARN, LOG_FEATURE_CFG, "CFG_InitAndLoad: Correct config has been loaded with %i changes count.",g_cfg.changeCounter);
 	}
+
+	memcpy(&g_cfg.mac, C2_MAC_ADDRESS, 6);
+	WiFI_SetMacAddress((char*)g_cfg.mac);
+	g_cfg_pendingChanges++;
 
 	// copy shortDeviceName to MQTT Client ID, set version=3
 	if (g_cfg.version<3) {

@@ -48,3 +48,5 @@ enc_temp_folder/**
 
 c2-env
 venv
+
+*.zip

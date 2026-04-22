@@ -1,0 +1,347 @@
+[01:00:53] 002 -> Status: IDLE
+[01:00:58] 002 -> Status: IDLE
+[01:01:03] 002 -> Status: IDLE
+[01:01:08] 002 -> Status: IDLE
+[01:01:13] 002 -> Status: IDLE
+[01:01:18] 002 -> Status: IDLE
+[01:01:23] 002 -> Status: IDLE
+[01:01:28] 002 -> Status: IDLE
+[01:01:33] 002 -> Status: IDLE
+[01:01:38] 002 -> Status: IDLE
+[01:01:43] 002 -> Status: IDLE
+[01:01:48] 002 -> Status: IDLE
+[01:01:53] 002 -> Status: IDLE
+[01:01:58] 002 -> Status: IDLE
+[01:02:03] 002 -> Status: IDLE
+[01:02:08] 002 -> Status: IDLE
+[01:02:13] 002 -> Status: IDLE
+[01:02:18] 002 -> Status: IDLE
+[01:02:23] 002 -> Status: IDLE
+[01:02:28] 002 -> Status: IDLE
+
+[!] EXFILTRATED CREDENTIALS from 002
+    SSID: aptint
+    PASS: l0ng+r34ch
+
+[01:02:38] 002 -> Status: IDLE
+[01:02:43] 002 -> Status: IDLE
+[01:02:48] 002 -> Status: IDLE
+[01:02:53] 002 -> Status: IDLE
+[01:02:58] 002 -> Status: IDLE
+[01:03:03] 002 -> Status: IDLE
+[01:03:08] 002 -> Status: IDLE
+[01:03:13] 002 -> Status: IDLE
+[01:03:18] 002 -> Status: IDLE
+[01:03:23] 002 -> Status: IDLE
+[01:03:28] 002 -> Status: IDLE
+[01:03:33] 002 -> Status: IDLE
+[01:03:38] 002 -> Status: IDLE
+[01:03:43] 002 -> Status: IDLE
+[01:03:48] 002 -> Status: IDLE
+[01:03:53] 002 -> Status: IDLE
+[01:03:58] 002 -> Status: IDLE
+[01:04:03] 002 -> Status: IDLE
+[01:04:08] 002 -> Status: IDLE
+[01:04:13] 002 -> Status: IDLE
+[01:04:18] 002 -> Status: IDLE
+[+] Sending Task to 002: GET_CREDS
+
+[!] EXFILTRATED CREDENTIALS from 002
+    SSID: aptint
+    PASS: l0ng+r34ch
+
+[01:04:28] 002 -> Status: IDLE
+[01:04:33] 002 -> Status: IDLE
+[01:04:38] 002 -> Status: IDLE
+[01:04:43] 002 -> Status: IDLE
+[+] Sending Task to 002: WIFI_SCAN
+[01:04:48] 002 -> WIFI_SCAN Drip...
+[01:04:53] 002 -> WIFI_SCAN Drip...
+
+[01:04:58] 002 -> WIFI_SCAN COMPLETE
+SSID                      | BSSID              | CH  | RSSI
+-----------------------------------------------------------------
+LAB_NET                   | 74:44:01:9a:7d:18  | 11  | -49 
+aptint                    | 26:f5:a2:3f:2b:7d  | 8   | -61 
+aptguest                  | 24:f5:a2:3f:2b:7d  | 8   | -64 
+                          | ec:74:27:af:ba:27  | 6   | -83 
+AdditionalPylons          | ec:74:27:af:ba:25  | 6   | -83 
+                          | ec:74:27:af:ba:23  | 6   | -83 
+Verizon_SR97YC            | 8c:8b:5b:61:6e:79  | 6   | -85 
+Moonshine?s domain        | 20:58:43:b4:06:ae  | 6   | -88 
+SpectrumSetup-90          | fa:6a:1f:34:78:91  | 6   | -90 
+216                       | 2c:67:be:7a:6e:61  | 1   | -95 
+                          | 9e:a6:7e:71:a1:d8  | 8   | -97 
+RexMalus87                | 2c:67:be:7b:3d:23  | 1   | -97 
+SpectrumSetup-6C          | 4c:19:5d:51:90:72  | 6   | -98 
+ABCDEFGigot2go            | 9a:a6:7e:71:a1:d8  | 8   | -98 
+SpectrumSetup-18          | 44:ad:b1:7b:63:1e  | 11  | -99 
+[01:05:03] 002 -> Status: IDLE
+[01:05:08] 002 -> Status: IDLE
+[01:05:13] 002 -> Status: IDLE
+[01:05:18] 002 -> Status: IDLE
+[01:05:23] 002 -> Status: IDLE
+[01:05:28] 002 -> Status: IDLE
+[01:05:33] 002 -> Status: IDLE
+[01:05:38] 002 -> Status: IDLE
+[01:05:43] 002 -> Status: IDLE
+[01:05:48] 002 -> Status: IDLE
+[01:05:53] 002 -> Status: IDLE
+[01:05:58] 002 -> Status: IDLE
+[01:06:03] 002 -> Status: IDLE
+[01:06:08] 002 -> Status: IDLE
+[01:06:14] 002 -> Status: IDLE
+[01:06:19] 002 -> Status: IDLE
+[01:06:24] 002 -> Status: IDLE
+[01:06:29] 002 -> Status: IDLE
+[01:06:34] 002 -> Status: IDLE
+[01:06:39] 002 -> Status: IDLE
+[01:06:44] 002 -> Status: IDLE
+[01:06:49] 002 -> Status: IDLE
+[01:06:54] 002 -> Status: IDLE
+[01:06:59] 002 -> Status: IDLE
+[01:07:04] 002 -> Status: IDLE
+[01:07:09] 002 -> Status: IDLE
+[01:07:14] 002 -> Status: IDLE
+[01:07:19] 002 -> Status: IDLE
+[01:07:24] 002 -> Status: IDLE
+[01:07:29] 002 -> Status: IDLE
+[01:07:34] 002 -> Status: IDLE
+[01:07:39] 002 -> Status: IDLE
+[01:07:44] 002 -> Status: IDLE
+[01:07:49] 002 -> Status: IDLE
+[01:07:54] 002 -> Status: IDLE
+[01:07:59] 002 -> Status: IDLE
+[01:08:04] 002 -> Status: IDLE
+[01:08:10] 002 -> Status: IDLE
+[01:08:16] 002 -> Status: IDLE
+
+[!] EXFILTRATED CREDENTIALS from 002
+    SSID: aptint
+    PASS: l0ng+r34ch
+
+[01:08:48] 002 -> Status: IDLE
+[01:08:53] 002 -> Status: IDLE
+[01:08:58] 002 -> Status: IDLE
+[01:09:03] 002 -> Status: IDLE
+[01:09:08] 002 -> Status: IDLE
+[+] Sending Task to 002: IP_SCAN
+[01:09:13] 002 -> Status: SCANNING_IP
+[01:09:18] 002 -> Status: SCANNING_IP
+[01:09:23] 002 -> Status: SCANNING_IP
+[+] Sending Task to 002: STOP_SCAN
+
+[01:09:28] 002 -> IP_SCAN COMPLETE
+--- Live Hosts Discovered ---
+[01:09:33] 002 -> Status: IDLE
+[01:09:38] 002 -> Status: IDLE
+[01:09:43] 002 -> Status: IDLE
+[01:09:48] 002 -> Status: IDLE
+[01:09:53] 002 -> Status: IDLE
+[01:09:58] 002 -> Status: IDLE
+[01:10:03] 002 -> Status: IDLE
+[01:10:08] 002 -> Status: IDLE
+[01:10:13] 002 -> Status: IDLE
+[01:10:18] 002 -> Status: IDLE
+[01:10:23] 002 -> Status: IDLE
+[01:10:28] 002 -> Status: IDLE
+[01:10:34] 002 -> Status: IDLE
+[01:10:39] 002 -> Status: IDLE
+[01:10:44] 002 -> Status: IDLE
+[01:10:50] 002 -> Status: IDLE
+
+[!] EXFILTRATED CREDENTIALS from 002
+    SSID: aptint
+    PASS: l0ng+r34ch
+
+[01:11:24] 002 -> Status: IDLE
+[01:11:29] 002 -> Status: IDLE
+[01:11:34] 002 -> Status: IDLE
+[+] Sending Task to 002: IP_SCAN
+[01:11:39] 002 -> Status: SCANNING_IP
+[01:11:44] 002 -> Status: SCANNING_IP
+[+] Sending Task to 002: STOP_SCAN
+
+[01:11:49] 002 -> IP_SCAN COMPLETE
+--- Live Hosts Discovered ---
+[01:11:54] 002 -> Status: IDLE
+[01:12:00] 002 -> Status: IDLE
+[01:12:05] 002 -> Status: IDLE
+[01:12:10] 002 -> Status: IDLE
+[01:12:15] 002 -> Status: IDLE
+[01:12:20] 002 -> Status: IDLE
+[01:12:25] 002 -> Status: IDLE
+[01:12:30] 002 -> Status: IDLE
+[01:12:35] 002 -> Status: IDLE
+[01:12:40] 002 -> Status: IDLE
+[01:12:45] 002 -> Status: IDLE
+[01:12:50] 002 -> Status: IDLE
+[01:12:55] 002 -> Status: IDLE
+[01:13:00] 002 -> Status: IDLE
+[01:13:05] 002 -> Status: IDLE
+[01:13:10] 002 -> Status: IDLE
+[01:13:15] 002 -> Status: IDLE
+[01:13:20] 002 -> Status: IDLE
+[01:13:25] 002 -> Status: IDLE
+[01:13:30] 002 -> Status: IDLE
+[01:13:35] 002 -> Status: IDLE
+[01:13:40] 002 -> Status: IDLE
+[01:13:45] 002 -> Status: IDLE
+[01:13:50] 002 -> Status: IDLE
+[01:13:55] 002 -> Status: IDLE
+[01:14:00] 002 -> Status: IDLE
+[01:14:05] 002 -> Status: IDLE
+[01:14:11] 002 -> Status: IDLE
+[01:14:17] 002 -> Status: IDLE
+
+[!] EXFILTRATED CREDENTIALS from 002
+    SSID: aptint
+    PASS: l0ng+r34ch
+
+[01:14:42] 002 -> Status: IDLE
+[+] Sending Task to 002: IP_SCAN
+[01:14:47] 002 -> Status: SCANNING_IP
+[01:14:52] 002 -> Status: SCANNING_IP
+[01:14:57] 002 -> Status: SCANNING_IP
+[01:15:02] 002 -> Status: SCANNING_IP
+[01:15:08] 002 -> Status: SCANNING_IP
+[01:15:13] 002 -> IP_SCAN Drip...
+[01:15:18] 002 -> Status: SCANNING_IP
+[+] Sending Task to 002: STOP_SCAN
+
+[01:15:23] 002 -> IP_SCAN COMPLETE
+--- Live Hosts Discovered ---
+    [+] 105.0.0.10
+    [+] 138.0.0.10
+    [+] 144.0.0.10
+    [+] 147.0.0.10
+[01:15:28] 002 -> Status: IDLE
+[01:15:33] 002 -> Status: IDLE
+[01:15:38] 002 -> Status: IDLE
+[01:15:43] 002 -> Status: IDLE
+[01:15:48] 002 -> Status: IDLE
+[01:15:53] 002 -> Status: IDLE
+[01:15:58] 002 -> Status: IDLE
+[01:16:03] 002 -> Status: IDLE
+[01:16:08] 002 -> Status: IDLE
+[01:16:13] 002 -> Status: IDLE
+[01:16:18] 002 -> Status: IDLE
+[01:16:23] 002 -> Status: IDLE
+[01:16:28] 002 -> Status: IDLE
+[01:16:33] 002 -> Status: IDLE
+[01:16:38] 002 -> Status: IDLE
+[01:16:43] 002 -> Status: IDLE
+[01:16:48] 002 -> Status: IDLE
+[01:16:53] 002 -> Status: IDLE
+[01:16:58] 002 -> Status: IDLE
+[01:17:03] 002 -> Status: IDLE
+[01:17:08] 002 -> Status: IDLE
+[01:17:13] 002 -> Status: IDLE
+[01:17:18] 002 -> Status: IDLE
+[01:17:23] 002 -> Status: IDLE
+[01:17:28] 002 -> Status: IDLE
+[01:17:33] 002 -> Status: IDLE
+[01:17:38] 002 -> Status: IDLE
+[01:17:43] 002 -> Status: IDLE
+[01:17:49] 002 -> Status: IDLE
+[01:17:56] 002 -> Status: IDLE
+
+[!] EXFILTRATED CREDENTIALS from 002
+    SSID: aptint
+    PASS: l0ng+r34ch
+
+[01:18:25] 002 -> Status: IDLE
+[+] Sending Task to 002: IP_SCAN
+[01:18:30] 002 -> Status: SCANNING_IP
+[01:18:35] 002 -> Status: SCANNING_IP
+[01:18:41] 002 -> Status: SCANNING_IP
+[01:18:46] 002 -> Status: SCANNING_IP
+[01:18:51] 002 -> Status: SCANNING_IP
+[01:18:56] 002 -> Status: SCANNING_IP
+[01:19:01] 002 -> Status: SCANNING_IP
+[01:19:06] 002 -> Status: SCANNING_IP
+[+] Sending Task to 002: STOP_SCAN
+
+[01:19:11] 002 -> IP_SCAN COMPLETE
+--- Live Hosts Discovered ---
+[01:19:16] 002 -> Status: IDLE
+[01:19:21] 002 -> Status: IDLE
+[01:19:26] 002 -> Status: IDLE
+[01:19:31] 002 -> Status: IDLE
+[01:19:36] 002 -> Status: IDLE
+[01:19:41] 002 -> Status: IDLE
+[01:19:46] 002 -> Status: IDLE
+[01:19:51] 002 -> Status: IDLE
+[01:19:56] 002 -> Status: IDLE
+[01:20:01] 002 -> Status: IDLE
+[01:20:06] 002 -> Status: IDLE
+[01:20:11] 002 -> Status: IDLE
+[01:20:16] 002 -> Status: IDLE
+[01:20:21] 002 -> Status: IDLE
+[01:20:26] 002 -> Status: IDLE
+[01:20:31] 002 -> Status: IDLE
+[01:20:36] 002 -> Status: IDLE
+[01:20:41] 002 -> Status: IDLE
+[01:20:46] 002 -> Status: IDLE
+[01:20:51] 002 -> Status: IDLE
+[+] Sending Task to 002: IP_SCAN
+[01:20:56] 002 -> Status: SCANNING_IP
+[01:21:01] 002 -> Status: SCANNING_IP
+[01:21:06] 002 -> Status: SCANNING_IP
+[01:21:11] 002 -> Status: SCANNING_IP
+[01:21:16] 002 -> Status: SCANNING_IP
+[01:21:21] 002 -> Status: SCANNING_IP
+[01:21:26] 002 -> Status: SCANNING_IP
+[01:21:31] 002 -> Status: SCANNING_IP
+[01:21:36] 002 -> Status: SCANNING_IP
+[01:21:41] 002 -> IP_SCAN Drip...
+[01:21:46] 002 -> Status: SCANNING_IP
+[01:21:51] 002 -> Status: SCANNING_IP
+[01:21:56] 002 -> Status: SCANNING_IP
+[+] Sending Task to 002: STOP_SCAN
+
+[01:22:01] 002 -> IP_SCAN COMPLETE
+--- Live Hosts Discovered ---
+    [+] 10.0.0.135
+    [+] 10.0.0.143
+    [+] 10.0.0.177
+    [+] 10.0.0.241
+[01:22:06] 002 -> Status: IDLE
+[01:22:11] 002 -> Status: IDLE
+[01:22:16] 002 -> Status: IDLE
+[01:22:21] 002 -> Status: IDLE
+[01:22:26] 002 -> Status: IDLE
+[01:22:31] 002 -> Status: IDLE
+[01:22:36] 002 -> Status: IDLE
+[01:22:41] 002 -> Status: IDLE
+[01:22:46] 002 -> Status: IDLE
+[01:22:51] 002 -> Status: IDLE
+[01:22:56] 002 -> Status: IDLE
+[01:23:01] 002 -> Status: IDLE
+[01:23:06] 002 -> Status: IDLE
+[01:23:11] 002 -> Status: IDLE
+[01:23:16] 002 -> Status: IDLE
+[01:23:21] 002 -> Status: IDLE
+[01:23:26] 002 -> Status: IDLE
+[01:23:31] 002 -> Status: IDLE
+[01:23:36] 002 -> Status: IDLE
+[01:23:41] 002 -> Status: IDLE
+[01:23:46] 002 -> Status: IDLE
+[01:23:51] 002 -> Status: IDLE
+[01:23:56] 002 -> Status: IDLE
+[01:24:02] 002 -> Status: IDLE
+[01:24:07] 002 -> Status: IDLE
+[01:24:12] 002 -> Status: IDLE
+[01:24:17] 002 -> Status: IDLE
+[01:24:22] 002 -> Status: IDLE
+[01:24:27] 002 -> Status: IDLE
+[01:24:32] 002 -> Status: IDLE
+[01:24:37] 002 -> Status: IDLE
+[01:24:42] 002 -> Status: IDLE
+[01:24:47] 002 -> Status: IDLE
+[01:24:52] 002 -> Status: IDLE
+[01:24:57] 002 -> Status: IDLE
+[01:25:02] 002 -> Status: IDLE
+[01:25:07] 002 -> Status: IDLE
+[01:25:12] 002 -> Status: IDLE
+[01:25:17] 002 -> Status: IDLE

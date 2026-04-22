@@ -1,6 +1,6 @@
 {
     "vendor": "Feit",
-    "bDetailed": "0",
+    "bDetailed": "1",
     "name": "Feit Electric OM60/RGBW/CA/AG (N) A19 E26 Smart Light Bulb",
     "model": "OM60/RGBW/CA/AG(N)",
     "chip": "BK7238",
@@ -16,7 +16,7 @@
         "26": "BP5758D_CLK"
     },
     "command": "backlog startDriver BP5758D; BP5758D_Map 2 0 1 4 3; BP5758D_Current 25 50",
-    "image": "https://obrazki.elektroda.pl/YOUR_IMAGE.jpg",
+    "image": "https://obrazki.elektroda.pl/3327228600_1776556148_thumb.jpg",
     "wiki": "https://www.elektroda.com/rtvforum/topic_YOUR_TOPIC.html",
     "device_configuration": {
         "rstnum":"3",

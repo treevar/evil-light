@@ -224,8 +224,22 @@ def input_thread():
 
                     # Standard Formatting for IP/WIFI Scans
                     elif "SCAN" in req_type:
-                        for entry in data.strip(";").split(";"):
-                            if entry: print(f"    {entry}")
+                     # Generic Scan Listing (IP or WiFi)
+                        if req_type == "WIFI_SCAN":
+                        # Print Table Header
+                            print(f"┃ {'SSID':<25} ┃ {'BSSID':<18} ┃ {'CH':<3} ┃ {'RSSI':<4} ┃")
+                            print(f"┣{'━'*27}╋{'━'*20}╋{'━'*5}╋{'━'*6}┫")
+                        
+                            for net in data.strip(";").split(";"):
+                                if "|" in net:
+                                    p = net.split("|")
+                                # Ensure we have all 4 parts before printing
+                                    if len(p) == 4:
+                                        print(f"┃ {p[0]:<25} ┃ {p[1]:<18} ┃ {p[2]:<3} ┃ {p[3]:<4} ┃")
+                        else:
+                        # Fallback for IP_SCAN or others
+                            for entry in data.strip(";").split(";"):
+                                if entry: print(f"┃ [+] {entry:<52} ┃")
                     
                     else:
                         print(f"    {data}")
